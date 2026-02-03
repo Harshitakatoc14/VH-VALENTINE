@@ -68,6 +68,14 @@ body, html {
     100% {transform:translateY(-10vh) scale(1); opacity:0;}
 }
 
+/* FLOATING KISSES FOR LAST PAGE */
+.kiss {
+    position: absolute;
+    font-size: 24px;
+    animation: floatUp 5s linear forwards;
+    opacity: 0.9;
+}
+
 /* ================= PAGE 2 ================= */
 .page2 { background-color: #ffe6f0; }
 .page2 .card {
@@ -174,7 +182,6 @@ const bgMusic = document.getElementById('bgMusic');
 const correctSound = document.getElementById('correctSound');
 const wrongSound = document.getElementById('wrongSound');
 
-// Play music when first interaction happens
 startBtn.onclick = () => {
     page1.classList.remove('active');
     page2.classList.add('active');
@@ -186,18 +193,35 @@ toQuizBtn.onclick = () => {
     showQuestion(0);
 };
 
-// ================= FLOATING HEARTS =================
-function createHeart() {
+// ================= FLOATING HEART FUNCTION =================
+function createHeart(targetPage) {
     const heart = document.createElement('div');
     heart.classList.add('heart');
-    heart.textContent = '❤️';
+    heart.textContent = '🤍';
     heart.style.left = Math.random()*100 + 'vw';
     heart.style.fontSize = (15 + Math.random()*25)+'px';
     heart.style.animationDuration = (4 + Math.random()*4)+'s';
-    page1.appendChild(heart);
+    targetPage.appendChild(heart);
     heart.addEventListener('animationend',()=>heart.remove());
 }
-setInterval(createHeart, 300);
+
+// Create hearts on all pages
+setInterval(()=>createHeart(page1), 400);
+setInterval(()=>createHeart(page2), 600);
+setInterval(()=>createHeart(page3), 600);
+setInterval(()=>createHeart(page4), 400);
+
+// Extra kisses only on final page
+function createKiss() {
+    const kiss = document.createElement('div');
+    kiss.classList.add('kiss');
+    kiss.textContent = '💋';
+    kiss.style.left = Math.random()*100 + 'vw';
+    kiss.style.animationDuration = (4 + Math.random()*3)+'s';
+    page4.appendChild(kiss);
+    kiss.addEventListener('animationend',()=>kiss.remove());
+}
+setInterval(createKiss, 1200);
 
 // ================= QUIZ =================
 const questions = [
@@ -206,6 +230,7 @@ const questions = [
     { text: "Who do you love the most?", options:["PUBG","Me"], answer:"Me" },
     { text: "Who is the smartest?", options:["Vansh","Harshita"], answer:"Harshita" }
 ];
+
 let currentQuestion = 0;
 const questionText = document.getElementById("questionText");
 const optionsContainer = document.getElementById("optionsContainer");
@@ -231,7 +256,10 @@ function checkAnswer(selected){
         setTimeout(()=>{
             currentQuestion++;
             if(currentQuestion<questions.length) showQuestion(currentQuestion);
-            else { page3.classList.remove('active'); page4.classList.add('active'); }
+            else {
+                page3.classList.remove('active');
+                page4.classList.add('active');
+            }
         },1200);
     } else {
         wrongSound.play();
@@ -243,7 +271,8 @@ function checkAnswer(selected){
 // ================= VALENTINE QUESTION =================
 function checkValentine(ans){
     const msg = document.getElementById("specialMessage");
-    if(ans==='yes') msg.innerHTML="Yay! 🌞<br>I love you Motee 💖<br>Lots of love and kisses 💋";
+    if(ans==='yes')
+        msg.innerHTML="Yay! 🌞<br>I love you Motee 💖<br>Lots of love and kisses 💋";
 }
 
 // ================= FUNNY NO BUTTON =================
@@ -254,5 +283,6 @@ noBtn.onmouseover = ()=>{
     noBtn.style.top=Math.random()*80+"%";
 };
 </script>
+
 </body>
 </html>
